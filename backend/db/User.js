@@ -58,5 +58,5 @@ schema.methods.login = function (password) {
     });
   });
 };
-
+console.log('test')
 module.exports = mongoose.model("UserAuth", schema);
