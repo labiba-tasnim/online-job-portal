@@ -639,39 +639,6 @@ const Home = (props) => {
           <Grid item xs>
             <Typography variant="h2">Jobs</Typography>
           </Grid>
-          <Grid item xs>
-            <TextField
-              label="Search Jobs"
-              value={searchOptions.query}
-              onChange={(event) =>
-                setSearchOptions({
-                  ...searchOptions,
-                  query: event.target.value,
-                })
-              }
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  getData();
-                }
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton onClick={() => getData()}>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              style={{ width: "500px" }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item>
-            <IconButton onClick={() => setFilterOpen(true)}>
-              <FilterListIcon />
-            </IconButton>
-          </Grid>
         </Grid>
 
         <Grid

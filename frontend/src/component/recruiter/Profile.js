@@ -177,7 +177,7 @@ const Profile = (props) => {
                 }}
               >
                 <PhoneInput
-                  country={"in"}
+                  country={"bd"}
                   value={phone}
                   onChange={(phone) => setPhone(phone)}
                   style={{ width: "auto" }}

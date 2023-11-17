@@ -18,7 +18,6 @@ import {
   Avatar,
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import Rating from "@material-ui/lab/Rating";
 import axios from "axios";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
@@ -317,63 +316,6 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-              <Grid
-                item
-                container
-                xs={6}
-                justify="space-around"
-                alignItems="center"
-                style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
-              >
-                <Grid item>
-                  <Checkbox
-                    name="rating"
-                    checked={searchOptions.sort["jobApplicant.rating"].status}
-                    onChange={(event) =>
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          "jobApplicant.rating": {
-                            ...searchOptions.sort[["jobApplicant.rating"]],
-                            status: event.target.checked,
-                          },
-                        },
-                      })
-                    }
-                    id="rating"
-                  />
-                </Grid>
-                <Grid item>
-                  <label for="rating">
-                    <Typography>Rating</Typography>
-                  </label>
-                </Grid>
-                <Grid item>
-                  <IconButton
-                    disabled={!searchOptions.sort["jobApplicant.rating"].status}
-                    onClick={() => {
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          "jobApplicant.rating": {
-                            ...searchOptions.sort["jobApplicant.rating"],
-                            desc: !searchOptions.sort["jobApplicant.rating"]
-                              .desc,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    {searchOptions.sort["jobApplicant.rating"].desc ? (
-                      <ArrowDownwardIcon />
-                    ) : (
-                      <ArrowUpwardIcon />
-                    )}
-                  </IconButton>
-                </Grid>
-              </Grid>
             </Grid>
           </Grid>
 
@@ -399,45 +341,8 @@ const ApplicationTile = (props) => {
   const setPopup = useContext(SetPopupContext);
   const [open, setOpen] = useState(false);
   const [openEndJob, setOpenEndJob] = useState(false);
-  const [rating, setRating] = useState(application.jobApplicant.rating);
 
   const appliedOn = new Date(application.dateOfApplication);
-
-  const changeRating = () => {
-    axios
-      .put(
-        apiList.rating,
-        { rating: rating, applicantId: application.jobApplicant.userId },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-        setPopup({
-          open: true,
-          severity: "success",
-          message: "Rating updated successfully",
-        });
-        // fetchRating();
-        getData();
-        setOpen(false);
-      })
-      .catch((err) => {
-        // console.log(err.response);
-        console.log(err);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
-        // fetchRating();
-        getData();
-        setOpen(false);
-      });
-  };
 
   const handleClose = () => {
     setOpen(false);
@@ -545,16 +450,6 @@ const ApplicationTile = (props) => {
               {application.jobApplicant.name}
             </Typography>
           </Grid>
-          <Grid item>
-            <Rating
-              value={
-                application.jobApplicant.rating !== -1
-                  ? application.jobApplicant.rating
-                  : null
-              }
-              readOnly
-            />
-          </Grid>
           <Grid item>Job Title: {application.job.title}</Grid>
           <Grid item>Role: {application.job.jobType}</Grid>
           <Grid item>Applied On: {appliedOn.toLocaleDateString()}</Grid>
@@ -594,50 +489,8 @@ const ApplicationTile = (props) => {
               End Job
             </Button>
           </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.statusBlock}
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              Rate Applicant
-            </Button>
-          </Grid>
         </Grid>
       </Grid>
-      <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
-        <Paper
-          style={{
-            padding: "20px",
-            outline: "none",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            minWidth: "30%",
-            alignItems: "center",
-          }}
-        >
-          <Rating
-            name="simple-controlled"
-            style={{ marginBottom: "30px" }}
-            value={rating === -1 ? null : rating}
-            onChange={(event, newValue) => {
-              setRating(newValue);
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ padding: "10px 50px" }}
-            onClick={() => changeRating()}
-          >
-            Submit
-          </Button>
-        </Paper>
-      </Modal>
       <Modal
         open={openEndJob}
         onClose={handleCloseEndJob}
@@ -704,10 +557,6 @@ const AcceptedApplicants = (props) => {
       dateOfJoining: {
         status: true,
         desc: true,
-      },
-      "jobApplicant.rating": {
-        status: false,
-        desc: false,
       },
     },
   });
