@@ -4,8 +4,6 @@ const jwt = require("jsonwebtoken");
 const authKeys = require("../lib/authKeys");
 
 const User = require("../db/user");
-const JobApplicant = require("../db/JobApplicant");
-const Recruiter = require("../db/Recruiter");
 
 const router = express.Router();
 
@@ -20,23 +18,23 @@ router.post("/signup", (req, res) => {
   user
     .save()
     .then(() => {
-      const userDetails =
-        user.type == "recruiter"
-          ? new Recruiter({
-              userId: user._id,
-              name: data.name,
-              contactNumber: data.contactNumber,
-              bio: data.bio,
-            })
-          : new JobApplicant({
-              userId: user._id,
-              name: data.name,
-              education: data.education,
-              skills: data.skills,
-              rating: data.rating,
-              resume: data.resume,
-              profile: data.profile,
-            });
+      // const userDetails =
+      //   user.type == "recruiter"
+      //     ? new Recruiter({
+      //         userId: user._id,
+      //         name: data.name,
+      //         contactNumber: data.contactNumber,
+      //         bio: data.bio,
+      //       })
+      //     : new JobApplicant({
+      //         userId: user._id,
+      //         name: data.name,
+      //         education: data.education,
+      //         skills: data.skills,
+      //         rating: data.rating,
+      //         resume: data.resume,
+      //         profile: data.profile,
+      //       });
 
       userDetails
         .save()

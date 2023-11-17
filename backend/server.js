@@ -7,7 +7,7 @@ const fs = require("fs");
 
 // MongoDB
 mongoose
-  .connect("mongodb://localhost:27017/jobPortal", {
+  .connect("mongodb+srv://nafisamehreen:XMsaoFen6QPokzeB@cluster1.2g8bkdr.mongodb.net/?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -40,9 +40,6 @@ app.use(passportConfig.initialize());
 
 // Routing
 app.use("/auth", require("./routes/authRoutes"));
-app.use("/api", require("./routes/apiRoutes"));
-app.use("/upload", require("./routes/uploadRoutes"));
-app.use("/host", require("./routes/downloadRoutes"));
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}!`);
