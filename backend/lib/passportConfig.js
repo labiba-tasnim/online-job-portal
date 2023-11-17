@@ -39,13 +39,6 @@ passport.use(
         user
           .login(password)
           .then(() => {
-            // let userSecure = {};
-            // const unwantedKeys = ["password", "__v"];
-            // Object.keys(user["_doc"]).forEach((key) => {
-            //   if (unwantedKeys.indexOf(key) === -1) {
-            //     userSecure[key] = user[key];
-            //   }
-            // });
             user["_doc"] = filterJson(user["_doc"], ["password", "__v"]);
             return done(null, user);
           })

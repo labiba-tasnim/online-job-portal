@@ -2,8 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passportConfig = require("./lib/passportConfig");
-const cors = require("cors");
-const fs = require("fs");
+const cors = require("cors"); //frontend theke req pathaite lage
+const fs = require("fs"); //file system frontend run korar jnno lage
 
 // MongoDB
 mongoose
