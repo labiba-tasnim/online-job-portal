@@ -16,7 +16,6 @@ import {
   MenuItem,
   Checkbox,
 } from "@material-ui/core";
-import Rating from "@material-ui/lab/Rating";
 import axios from "axios";
 
 import { SetPopupContext } from "../App";
