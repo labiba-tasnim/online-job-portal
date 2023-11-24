@@ -168,7 +168,7 @@ const JobTile = (props) => {
           </Grid>
           <Grid item>
             {job.skillsets.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
+              <Chip label={skill} key={skill} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
         </Grid>
@@ -679,6 +679,8 @@ const FilterPopup = (props) => {
 
 const MyJobs = (props) => {
   const [jobs, setJobs] = useState([]);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [currPage, setCurrPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOptions, setSearchOptions] = useState({
     query: "",
@@ -710,7 +712,7 @@ const MyJobs = (props) => {
     getData();
   }, []);
 
-  const getData = () => {
+  const getData = (page=1) => {
     let searchParams = [`myjobs=1`];
     if (searchOptions.query !== "") {
       searchParams = [...searchParams, `q=${searchOptions.query}`];
@@ -743,6 +745,8 @@ const MyJobs = (props) => {
     let asc = [],
       desc = [];
 
+    searchParams = [...searchParams, `page=${page}`, 'limit=5'];
+
     Object.keys(searchOptions.sort).forEach((obj) => {
       const item = searchOptions.sort[obj];
       if (item.status) {
@@ -770,7 +774,18 @@ const MyJobs = (props) => {
       })
       .then((response) => {
         console.log(response.data);
-        setJobs(response.data);
+        setJobs((prevJobs) =>
+          [
+            ...prevJobs,
+            ...response.data.results.filter((obj) => {
+              const today = new Date();
+              const deadline = new Date(obj.deadline);
+              return deadline > today;
+            })
+          ]
+        );
+
+        setHasNextPage(response.data.hasNextPage);
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -781,6 +796,11 @@ const MyJobs = (props) => {
         });
       });
   };
+
+  const handleLoadMore = () => {
+    setCurrPage((prevPage) => prevPage + 1);
+    getData(currPage + 1);
+  }
 
   return (
     <>
@@ -802,6 +822,39 @@ const MyJobs = (props) => {
             <Typography variant="h2">My Jobs</Typography>
           </Grid>
         </Grid>
+        <Grid item xs>
+            <TextField
+              label="Search Jobs"
+              value={searchOptions.query}
+              onChange={(event) =>
+                setSearchOptions({
+                  ...searchOptions,
+                  query: event.target.value,
+                })
+              }
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  getData();
+                }
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                    <IconButton onClick={() => getData()}>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              style={{ width: "500px" }}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item>
+            <IconButton onClick={() => setFilterOpen(true)}>
+              <FilterListIcon />
+            </IconButton>
+          </Grid>
 
         <Grid
           container
@@ -813,7 +866,7 @@ const MyJobs = (props) => {
         >
           {jobs.length > 0 ? (
             jobs.map((job) => {
-              return <JobTile job={job} getData={getData} />;
+              return <JobTile job={job} getData={getData} key={job._id} />;
             })
           ) : (
             <Typography variant="h5" style={{ textAlign: "center" }}>
@@ -821,6 +874,7 @@ const MyJobs = (props) => {
             </Typography>
           )}
         </Grid>
+        <Button variant="contained" disabled={!hasNextPage} onClick={handleLoadMore}>Load More</Button>
       </Grid>
       <FilterPopup
         open={filterOpen}
@@ -828,6 +882,7 @@ const MyJobs = (props) => {
         setSearchOptions={setSearchOptions}
         handleClose={() => setFilterOpen(false)}
         getData={() => {
+          setJobs([]);
           getData();
           setFilterOpen(false);
         }}
