@@ -512,7 +512,9 @@ const FilterPopup = (props) => {
 
 const Home = (props) => {
   const [jobs, setJobs] = useState([]);
+  const [currPage, setCurrPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
@@ -543,7 +545,7 @@ const Home = (props) => {
     getData();
   }, []);
 
-  const getData = () => {
+  const getData = (page=1) => {
     let searchParams = [];
     if (searchOptions.query !== "") {
       searchParams = [...searchParams, `q=${searchOptions.query}`];
@@ -576,6 +578,8 @@ const Home = (props) => {
     let asc = [],
       desc = [];
 
+    searchParams = [...searchParams, `page=${page}`, 'limit=5'];
+
     Object.keys(searchOptions.sort).forEach((obj) => {
       const item = searchOptions.sort[obj];
       if (item.status) {
@@ -602,13 +606,18 @@ const Home = (props) => {
       })
       .then((response) => {
         console.log(response.data);
-        setJobs(
-          response.data.filter((obj) => {
-            const today = new Date();
-            const deadline = new Date(obj.deadline);
-            return deadline > today;
-          })
+        setJobs((prevJobs) =>
+          [
+            ...prevJobs,
+            ...response.data.results.filter((obj) => {
+              const today = new Date();
+              const deadline = new Date(obj.deadline);
+              return deadline > today;
+            })
+          ]
         );
+
+        setHasNextPage(response.data.hasNextPage);
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -619,6 +628,12 @@ const Home = (props) => {
         });
       });
   };
+
+  const handleLoadMore = () => {
+    console.log('i clicked');
+    setCurrPage((prevPage) => prevPage + 1);
+    getData(currPage + 1);
+  }
 
   return (
     <>
@@ -639,6 +654,40 @@ const Home = (props) => {
           <Grid item xs>
             <Typography variant="h2">Jobs</Typography>
           </Grid>
+          <Grid item xs>
+            <TextField
+              label="Search Jobs"
+              value={searchOptions.query}
+              onChange={(event) =>
+                setSearchOptions({
+                  ...searchOptions,
+                  query: event.target.value,
+                })
+              }
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  setJobs([]);
+                  getData();
+                }
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                    <IconButton onClick={() => getData()}>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              style={{ width: "500px" }}
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item>
+            <IconButton onClick={() => setFilterOpen(true)}>
+              <FilterListIcon />
+            </IconButton>
+          </Grid>
         </Grid>
 
         <Grid
@@ -658,6 +707,7 @@ const Home = (props) => {
               No jobs found
             </Typography>
           )}
+          <Button variant="contained" disabled={!hasNextPage} onClick={handleLoadMore}>Load More</Button>
         </Grid>
         {/* <Grid item>
           <Pagination count={10} color="primary" />
@@ -669,6 +719,7 @@ const Home = (props) => {
         setSearchOptions={setSearchOptions}
         handleClose={() => setFilterOpen(false)}
         getData={() => {
+          setJobs([]);
           getData();
           setFilterOpen(false);
         }}

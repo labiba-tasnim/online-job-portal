@@ -53,10 +53,6 @@ router.get("/jobs", jwtAuth, (req, res) => {
   let findParams = {};
   let sortParams = {};
 
-  // const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
-  // const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
-  // const skip = page - 1 >= 0 ? (page - 1) * limit : 0;
-
   // to list down jobs posted by a particular recruiter
   if (user.type === "recruiter" && req.query.myjobs) {
     findParams = {
@@ -163,12 +159,8 @@ router.get("/jobs", jwtAuth, (req, res) => {
     }
   }
 
-  console.log(findParams);
-  console.log(sortParams);
-
-  // Job.find(findParams).collation({ locale: "en" }).sort(sortParams);
-  // .skip(skip)
-  // .limit(limit)
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
   let arr = [
     {
@@ -201,21 +193,50 @@ router.get("/jobs", jwtAuth, (req, res) => {
     ];
   }
 
-  console.log(arr);
+  arr.push(
+    { $skip: (page - 1) * limit },
+    { $limit: limit }
+  );
 
-  Job.aggregate(arr)
-    .then((posts) => {
-      if (posts == null) {
-        res.status(404).json({
-          message: "No job found",
-        });
-        return;
+  const aggregator = [
+    {
+      $facet: {
+        results: arr,
+        totalCount: [
+          { $match: findParams },
+          { $count: "count" },
+        ],
       }
-      res.json(posts);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
+    },
+    {
+      $project: {
+        results: 1,
+        totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
+      }
+    }
+  ]
+
+  Job.aggregate(aggregator)
+  .then((result) => {
+    const { results, totalCount } = result[0];
+    
+    if (results.length === 0) {
+      res.status(404).json({
+        message: "No job found",
+      });
+      return;
+    }
+
+    res.json({
+      results,
+      totalCount,
+      hasNextPage: (page * limit) < totalCount,
     });
+  })
+  .catch((err) => {
+    console.log('err is', err);
+    res.status(400).json(err);
+  });
 });
 
 // to get info about a particular job
