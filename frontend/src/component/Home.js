@@ -16,6 +16,7 @@ import {
   MenuItem,
   Checkbox,
 } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 import Rating from "@material-ui/lab/Rating";
 import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     width: "100%",
-    height: "100%",
+    height: "30%",
   },
   jobTileOuter: {
     padding: "30px",
@@ -123,17 +124,24 @@ const JobTile = (props) => {
           </Grid>
         </Grid>
         <Grid item xs={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={() => {
-              setOpen(true);
-            }}
-            disabled={userType() === "recruiter"}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            height="100%"
           >
-            Apply
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={() => {
+                setOpen(true);
+              }}
+              disabled={userType() === "recruiter"}
+            >
+              Apply
+            </Button>
+          </Box>
         </Grid>
       </Grid>
       <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
@@ -435,62 +443,7 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-              <Grid
-                item
-                container
-                xs={4}
-                justify="space-around"
-                alignItems="center"
-                style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
-              >
-                <Grid item>
-                  <Checkbox
-                    name="rating"
-                    checked={searchOptions.sort.rating.status}
-                    onChange={(event) =>
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          rating: {
-                            ...searchOptions.sort.rating,
-                            status: event.target.checked,
-                          },
-                        },
-                      })
-                    }
-                    id="rating"
-                  />
-                </Grid>
-                <Grid item>
-                  <label for="rating">
-                    <Typography>Rating</Typography>
-                  </label>
-                </Grid>
-                <Grid item>
-                  <IconButton
-                    disabled={!searchOptions.sort.rating.status}
-                    onClick={() => {
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          rating: {
-                            ...searchOptions.sort.rating,
-                            desc: !searchOptions.sort.rating.desc,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    {searchOptions.sort.rating.desc ? (
-                      <ArrowDownwardIcon />
-                    ) : (
-                      <ArrowUpwardIcon />
-                    )}
-                  </IconButton>
-                </Grid>
-              </Grid>
+              
             </Grid>
           </Grid>
 
@@ -515,6 +468,7 @@ const Home = (props) => {
   const [currPage, setCurrPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(false);
+
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
