@@ -123,26 +123,32 @@ const JobTile = (props) => {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            height="100%"
+      </Grid>
+      <Grid
+        item
+        container
+        xs
+        justify="center"  
+        alignItems="flex-end"  
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          width="30%"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => {
+              setOpen(true);
+            }}
+            disabled={userType() === "recruiter"}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={() => {
-                setOpen(true);
-              }}
-              disabled={userType() === "recruiter"}
-            >
-              Apply
-            </Button>
-          </Box>
-        </Grid>
+            Apply Now
+          </Button>
+        </Box>
       </Grid>
       <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
         <Paper
@@ -156,31 +162,38 @@ const JobTile = (props) => {
             alignItems: "center",
           }}
         >
-          <TextField
-            label="Write SOP (upto 250 words)"
-            multiline
-            rows={8}
-            style={{ width: "100%", marginBottom: "30px" }}
-            variant="outlined"
-            value={sop}
-            onChange={(event) => {
-              if (
-                event.target.value.split(" ").filter(function (n) {
-                  return n != "";
-                }).length <= 250
-              ) {
-                setSop(event.target.value);
-              }
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ padding: "10px 50px" }}
-            onClick={() => handleApply()}
-          >
-            Submit
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              How much would you like to be paid for this Job?
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Per Month"
+                style={{ width: "100%", marginBottom: "30px" }}
+                variant="outlined"
+                value={sop}
+                onChange={(event) => {
+                  if (
+                    event.target.value.split(" ").filter(function (n) {
+                      return n != "";
+                    }).length <= 250
+                  ) {
+                    setSop(event.target.value);
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item container xs={12} justify="center">
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ padding: "10px 50px" }}
+                onClick={() => handleApply()}
+              >
+                Submit
+              </Button>
+            </Grid>
+          </Grid>
         </Paper>
       </Modal>
     </Paper>
