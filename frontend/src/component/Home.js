@@ -118,7 +118,7 @@ const JobTile = (props) => {
 
           <Grid item>
             {job.skillsets.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
+              <Chip label={skill} key={skill} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
         </Grid>
@@ -700,7 +700,7 @@ const Home = (props) => {
         >
           {jobs.length > 0 ? (
             jobs.map((job) => {
-              return <JobTile job={job} />;
+              return <JobTile job={job} key={job._id} />;
             })
           ) : (
             <Typography variant="h5" style={{ textAlign: "center" }}>
