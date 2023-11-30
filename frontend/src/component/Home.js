@@ -17,13 +17,14 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
-import Rating from "@material-ui/lab/Rating";
 import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import { SetPopupContext } from "../App";
 
@@ -124,26 +125,32 @@ const JobTile = (props) => {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <Box
-            display="flex"
-            alignItems="flex-end"
-            justifyContent="center"
-            height="100%"
+      </Grid>
+      <Grid
+        item
+        container
+        xs={12}
+        justify="center"  
+        alignItems="flex-end"  
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => {
+              setOpen(true);
+            }}
+            disabled={userType() === "recruiter"}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={() => {
-                setOpen(true);
-              }}
-              disabled={userType() === "recruiter"}
-            >
-              Apply
-            </Button>
-          </Box>
-        </Grid>
+            Apply
+          </Button>
+        </Box>
       </Grid>
       <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
         <Paper
@@ -449,10 +456,8 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-              
             </Grid>
           </Grid>
-
           <Grid item>
             <Button
               variant="contained"
@@ -490,10 +495,6 @@ const Home = (props) => {
         desc: false,
       },
       duration: {
-        status: false,
-        desc: false,
-      },
-      rating: {
         status: false,
         desc: false,
       },

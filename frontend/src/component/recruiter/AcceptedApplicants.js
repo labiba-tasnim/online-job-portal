@@ -19,6 +19,7 @@ import {
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Box from '@material-ui/core/Box';
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
@@ -462,17 +463,28 @@ const ApplicationTile = (props) => {
             ))}
           </Grid>
         </Grid>
-        <Grid item container direction="column" xs={3}>
-          <Grid item>
-            
-          </Grid>
-          <Grid item container xs>
+        <Grid 
+          item 
+          container 
+          xs
+          justify="center"  
+          alignItems="center"
+          >
             {/* {buttonSet[application.status]} */}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="30%"
+            width="100%"
+          >  
             <Button
               variant="contained"
               color="primary"
               className={classes.statusBlock}
               style={{
+                width: "100%",
+                height: "100%",
                 background: "#09BC8A",
               }}
               onClick={() => {
@@ -481,7 +493,7 @@ const ApplicationTile = (props) => {
             >
               End Job
             </Button>
-          </Grid>
+          </Box>
         </Grid>
       </Grid>
       <Modal

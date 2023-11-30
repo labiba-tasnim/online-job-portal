@@ -18,7 +18,7 @@ import {
   Avatar,
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import Rating from "@material-ui/lab/Rating";
+import Box from '@material-ui/core/Box';
 import axios from "axios";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
@@ -261,12 +261,8 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-            
-                
-            
             </Grid>
           </Grid>
-
           <Grid item>
             <Button
               variant="contained"
@@ -372,116 +368,172 @@ const ApplicationTile = (props) => {
     applied: (
       <>
         <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["shortlisted"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("shortlisted")}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
           >
-            Shortlist
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                height: "30%",
+                background: colorSet["shortlisted"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("shortlisted")}
+            >
+              Shortlist
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["rejected"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("rejected")}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
           >
-            Reject
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                height: "30%",
+                background: colorSet["rejected"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("rejected")}
+            >
+              Reject
+            </Button>
+          </Box>
         </Grid>
       </>
     ),
     shortlisted: (
       <>
         <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["accepted"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("accepted")}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
           >
-            Accept
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                height: "30%",
+                background: colorSet["accepted"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("accepted")}
+            >
+              Accept
+            </Button>
+          </Box>
         </Grid>
         <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["rejected"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("rejected")}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
           >
-            Reject
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                height: "30%",
+                background: colorSet["rejected"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("rejected")}
+            >
+              Reject
+            </Button>
+          </Box>
         </Grid>
       </>
     ),
     rejected: (
       <>
-        <Grid item xs>
-          <Paper
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
+          <Box
             className={classes.statusBlock}
             style={{
+              height: "50%",
               background: colorSet["rejected"],
               color: "#ffffff",
             }}
           >
             Rejected
-          </Paper>
+          </Box>
         </Grid>
       </>
     ),
     accepted: (
       <>
-        <Grid item xs>
-          <Paper
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
+          <Box
             className={classes.statusBlock}
             style={{
+              height: "50%",
               background: colorSet["accepted"],
               color: "#ffffff",
             }}
           >
             Accepted
-          </Paper>
+          </Box>
         </Grid>
       </>
     ),
     cancelled: (
       <>
-        <Grid item xs>
-          <Paper
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
+          <Box
             className={classes.statusBlock}
             style={{
+              height: "50%",
               background: colorSet["cancelled"],
               color: "#ffffff",
             }}
           >
             Cancelled
-          </Paper>
+          </Box>
         </Grid>
       </>
     ),
     finished: (
       <>
-        <Grid item xs>
-          <Paper
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
+          <Box
             className={classes.statusBlock}
             style={{
+              height: "50%",
               background: colorSet["finished"],
               color: "#ffffff",
             }}
           >
             Finished
-          </Paper>
+          </Box>
         </Grid>
       </>
     ),
