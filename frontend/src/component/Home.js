@@ -68,6 +68,7 @@ const JobTile = (props) => {
   const handleApply = () => {
     console.log(job._id);
     console.log(sop);
+    
     axios
       .post(
         `${apiList.jobs}/${job._id}/applications`,
@@ -126,7 +127,7 @@ const JobTile = (props) => {
         <Grid item xs={3}>
           <Box
             display="flex"
-            alignItems="center"
+            alignItems="flex-end"
             justifyContent="center"
             height="100%"
           >
@@ -151,36 +152,41 @@ const JobTile = (props) => {
             outline: "none",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "centre",
             minWidth: "50%",
             alignItems: "center",
           }}
         >
-          <TextField
-            label="Write SOP (upto 250 words)"
-            multiline
-            rows={8}
-            style={{ width: "100%", marginBottom: "30px" }}
-            variant="outlined"
-            value={sop}
-            onChange={(event) => {
-              if (
-                event.target.value.split(" ").filter(function (n) {
-                  return n != "";
-                }).length <= 250
-              ) {
-                setSop(event.target.value);
-              }
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ padding: "10px 50px" }}
-            onClick={() => handleApply()}
-          >
-            Submit
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              How much would you like to be paid for this Job?
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label=""
+                style={{ width: "100%", marginBottom: "30px" }}
+                variant="outlined"
+                value={sop}
+                onChange={(event) => {
+                  if (
+                    event.target.value.split(" ").filter(function (n) {
+                      return n != "";
+                    }).length <= 250
+                  ) {
+                    setSop(event.target.value);
+                  }
+                }}
+              />
+            </Grid>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ padding: "10px 50px" }}
+              onClick={() => handleApply()}
+            >
+              Submit
+            </Button>
+          </Grid>
         </Paper>
       </Modal>
     </Paper>

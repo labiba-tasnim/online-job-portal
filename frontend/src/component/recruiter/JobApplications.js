@@ -305,7 +305,7 @@ const ApplicationTile = (props) => {
     finished: "#4EA5D9",
   };
 
-  const getResume = () => {
+  /*const getResume = () => {
     if (
       application.jobApplicant.resume &&
       application.jobApplicant.resume !== ""
@@ -336,7 +336,7 @@ const ApplicationTile = (props) => {
         message: "No resume found",
       });
     }
-  };
+  };*/
 
   const updateStatus = (status) => {
     const address = `${apiList.applications}/${application._id}`;
@@ -523,7 +523,7 @@ const ApplicationTile = (props) => {
               .join(", ")}
           </Grid>
           <Grid item>
-            SOP: {application.sop !== "" ? application.sop : "Not Submitted"}
+            Expected Salary: {application.sop !== "" ? application.sop : "Not Submitted"}
           </Grid>
           <Grid item>
             {application.jobApplicant.skills.map((skill) => (
