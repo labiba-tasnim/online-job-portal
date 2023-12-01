@@ -276,6 +276,16 @@ const Profile = (props) => {
                   fullWidth
                 />
               </Grid>
+              <Grid item>
+                <FileUploadInput
+                  className={classes.inputBox}
+                  label="Resume (.pdf)"
+                  icon={<DescriptionIcon />}
+                  uploadTo={apiList.uploadResume}
+                  handleInput={handleInput}
+                  identifier={"resume"}
+                />
+              </Grid>
             </Grid>
             <Button
               variant="contained"

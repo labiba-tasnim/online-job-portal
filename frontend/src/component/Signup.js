@@ -408,6 +408,23 @@ const Login = (props) => {
                 }
               />
             </Grid>
+            <Grid item>
+              <FileUploadInput
+                className={classes.inputBox}
+                label="Resume (.pdf)"
+                icon={<DescriptionIcon />}
+                // value={files.resume}
+                // onChange={(event) =>
+                //   setFiles({
+                //     ...files,
+                //     resume: event.target.files[0],
+                //   })
+                // }
+                uploadTo={apiList.uploadResume}
+                handleInput={handleInput}
+                identifier={"resume"}
+              />
+            </Grid>
           </>
         ) : (
           <>
