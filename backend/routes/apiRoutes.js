@@ -336,7 +336,7 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
 // get user's personal details
 router.get("/user", jwtAuth, (req, res) => {
     const user = req.user;
-    if (user.type === "recruiter") {
+    if (user.type === "recruiter") { 
       Recruiter.findOne({ userId: user._id })
         .then((recruiter) => {
           if (recruiter == null) {
@@ -490,22 +490,40 @@ router.get("/user", jwtAuth, (req, res) => {
         });
     }
   });
-  
-  // notif stuff 
-  user.notification.push({
-    message: "New job application received"
-  })
-  user.save();
 
+  // router.post("/jobs/:id/applications", jwtAuth, (req,res) => {
+  //   const user = req.user;
+  //   Recruiter.findOne({_id})
+  // })
+  
   // apply for a job [todo: test: done]
   router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
     const user = req.user;
-    if (user.type != "applicant") {
-      res.status(401).json({
-        message: "You don't have permissions to apply for a job",
+    if (user.type === "recruiter") {
+      Recruiter.findOne({userId: user._id})
+        .then((recruiter) => {
+          if (recruiter) {
+            recruiter.notifications.push({
+              message: "New job application received"
+            });
+            return recruiter.save();
+          }
+        })
+        .then(() => {
+          res.json({
+            message: "Job application successful",
+          })
+        })
+        .catch ((err) => {
+          res.status(400).json(err);
+        });
+      } else {
+        res.status(401).json({
+          message: "You don't have permissions to apply for a job",
       });
       return;
     }
+    
     const data = req.body;
     const jobId = req.params.id;
   
