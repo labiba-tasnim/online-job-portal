@@ -301,7 +301,7 @@ const ApplicationTile = (props) => {
     finished: "#4EA5D9",
   };
 
-  /*const getResume = () => {
+  const getResume = () => {
     if (
       application.jobApplicant.resume &&
       application.jobApplicant.resume !== ""
@@ -332,7 +332,7 @@ const ApplicationTile = (props) => {
         message: "No resume found",
       });
     }
-  };*/
+  };
 
   const updateStatus = (status) => {
     const address = `${apiList.applications}/${application._id}`;
@@ -531,7 +531,7 @@ const ApplicationTile = (props) => {
           <Paper
             className={classes.statusBlock}
             style={{
-              width: "100%',
+              width: "100%",
               height: "50%",
               background: colorSet["finished"],
               color: "#ffffff",
@@ -590,6 +590,14 @@ const ApplicationTile = (props) => {
         </Grid>
         <Grid item container direction="column" xs={3}>
           <Grid item>
+          <Button
+              variant="contained"
+              className={classes.statusBlock}
+              color="primary"
+              onClick={() => getResume()}
+            >
+              Download Resume
+            </Button>
             
           </Grid>
           <Grid item container xs>

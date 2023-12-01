@@ -463,6 +463,18 @@ const ApplicationTile = (props) => {
             ))}
           </Grid>
         </Grid>
+        <Grid item container direction="column" xs={3}>
+          <Grid item>
+            <Button
+              variant="contained"
+              className={classes.statusBlock}
+              color="primary"
+              onClick={() => getResume()}
+            >
+              Download Resume
+            </Button>
+          </Grid>
+        </Grid>
         <Grid 
           item 
           container 
