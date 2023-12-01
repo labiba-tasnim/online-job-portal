@@ -471,13 +471,6 @@ const ApplicationTile = (props) => {
           alignItems="center"
           >
             {/* {buttonSet[application.status]} */}
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="30%"
-            width="100%"
-          >  
             <Button
               variant="contained"
               color="primary"
@@ -493,7 +486,6 @@ const ApplicationTile = (props) => {
             >
               End Job
             </Button>
-          </Box>
         </Grid>
       </Grid>
       <Modal

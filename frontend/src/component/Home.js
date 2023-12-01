@@ -129,7 +129,7 @@ const JobTile = (props) => {
       <Grid
         item
         container
-        xs={12}
+        xs
         justify="center"  
         alignItems="flex-end"  
       >
@@ -137,7 +137,7 @@ const JobTile = (props) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="100%"
+          width="30%"
         >
           <Button
             variant="contained"
@@ -148,7 +148,7 @@ const JobTile = (props) => {
             }}
             disabled={userType() === "recruiter"}
           >
-            Apply
+            Apply Now
           </Button>
         </Box>
       </Grid>
@@ -168,9 +168,9 @@ const JobTile = (props) => {
             <Grid item xs={12}>
               How much would you like to be paid for this Job?
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
-                label=""
+                label="Per Month"
                 style={{ width: "100%", marginBottom: "30px" }}
                 variant="outlined"
                 value={sop}
@@ -185,14 +185,16 @@ const JobTile = (props) => {
                 }}
               />
             </Grid>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ padding: "10px 50px" }}
-              onClick={() => handleApply()}
-            >
-              Submit
-            </Button>
+            <Grid item container xs={12} justify="center">
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ padding: "10px 50px" }}
+                onClick={() => handleApply()}
+              >
+                Submit
+              </Button>
+            </Grid>
           </Grid>
         </Paper>
       </Modal>

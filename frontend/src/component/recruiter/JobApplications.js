@@ -367,16 +367,17 @@ const ApplicationTile = (props) => {
   const buttonSet = {
     applied: (
       <>
-        <Grid item xs>
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100%"
+        <Grid 
+          item
+          container
+          xs
+          justify="center"
+          alignItems="center"
           >
             <Button
               className={classes.statusBlock}
               style={{
+                width: "100%",
                 height: "30%",
                 background: colorSet["shortlisted"],
                 color: "#ffffff",
@@ -385,18 +386,19 @@ const ApplicationTile = (props) => {
             >
               Shortlist
             </Button>
-          </Box>
+          
         </Grid>
-        <Grid item xs>
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100%"
+        <Grid
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center"
           >
             <Button
               className={classes.statusBlock}
               style={{
+                width: "100%",
                 height: "30%",
                 background: colorSet["rejected"],
                 color: "#ffffff",
@@ -405,22 +407,22 @@ const ApplicationTile = (props) => {
             >
               Reject
             </Button>
-          </Box>
         </Grid>
       </>
     ),
     shortlisted: (
       <>
-        <Grid item xs>
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100%"
+        <Grid
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center"
           >
             <Button
               className={classes.statusBlock}
               style={{
+                width: "100%",
                 height: "30%",
                 background: colorSet["accepted"],
                 color: "#ffffff",
@@ -429,18 +431,18 @@ const ApplicationTile = (props) => {
             >
               Accept
             </Button>
-          </Box>
         </Grid>
-        <Grid item xs>
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100%"
+        <Grid
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center"
           >
             <Button
               className={classes.statusBlock}
               style={{
+                width: "100%",
                 height: "30%",
                 background: colorSet["rejected"],
                 color: "#ffffff",
@@ -449,7 +451,6 @@ const ApplicationTile = (props) => {
             >
               Reject
             </Button>
-          </Box>
         </Grid>
       </>
     ),
@@ -461,16 +462,17 @@ const ApplicationTile = (props) => {
           xs 
           justify="center"
           alignItems="center">
-          <Box
+          <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%",
               height: "50%",
               background: colorSet["rejected"],
               color: "#ffffff",
             }}
           >
             Rejected
-          </Box>
+          </Paper>
         </Grid>
       </>
     ),
@@ -482,16 +484,17 @@ const ApplicationTile = (props) => {
           xs 
           justify="center"
           alignItems="center">
-          <Box
+          <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%",
               height: "50%",
               background: colorSet["accepted"],
               color: "#ffffff",
             }}
           >
             Accepted
-          </Box>
+          </Paper>
         </Grid>
       </>
     ),
@@ -503,16 +506,17 @@ const ApplicationTile = (props) => {
           xs 
           justify="center"
           alignItems="center">
-          <Box
+          <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%",
               height: "50%",
               background: colorSet["cancelled"],
               color: "#ffffff",
             }}
           >
             Cancelled
-          </Box>
+          </Paper>
         </Grid>
       </>
     ),
@@ -524,16 +528,17 @@ const ApplicationTile = (props) => {
           xs 
           justify="center"
           alignItems="center">
-          <Box
+          <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%',
               height: "50%",
               background: colorSet["finished"],
               color: "#ffffff",
             }}
           >
             Finished
-          </Box>
+          </Paper>
         </Grid>
       </>
     ),
