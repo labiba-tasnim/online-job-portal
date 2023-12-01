@@ -531,7 +531,7 @@ const ApplicationTile = (props) => {
           <Paper
             className={classes.statusBlock}
             style={{
-              width: "100%',
+              width: "100%",
               height: "50%",
               background: colorSet["finished"],
               color: "#ffffff",
