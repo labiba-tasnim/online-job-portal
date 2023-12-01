@@ -1,6 +1,7 @@
 const express = require("express");
 const jwtAuth = require("../lib/jwtAuth");
 const mongoose = require("mongoose");
+// const socketIO = require('socket.io')
 
 const User = require("../db/User");
 const JobApplicant = require("../db/JobApplicant");
@@ -335,9 +336,9 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
 // get user's personal details
 router.get("/user", jwtAuth, (req, res) => {
     const user = req.user;
-    if (user.type === "recruiter") {
+    if (user.type === "recruiter") { 
       Recruiter.findOne({ userId: user._id })
-        .then((recruiter) => {
+        .then((recruiter) => {    
           if (recruiter == null) {
             res.status(404).json({
               message: "User does not exist",
@@ -349,6 +350,7 @@ router.get("/user", jwtAuth, (req, res) => {
         .catch((err) => {
           res.status(400).json(err);
         });
+
     } else {
       JobApplicant.findOne({ userId: user._id })
         .then((jobApplicant) => {
@@ -469,12 +471,12 @@ router.get("/user", jwtAuth, (req, res) => {
           if (data.resume) {
             jobApplicant.resume = data.resume;
           }
-          if (data.profile) {
+          if (data.profile) {   
             jobApplicant.profile = data.profile;
           }
           console.log(jobApplicant);
           jobApplicant
-            .save()
+            .save()  
             .then(() => {
               res.json({
                 message: "User information updated successfully",
@@ -485,20 +487,40 @@ router.get("/user", jwtAuth, (req, res) => {
             });
         })
         .catch((err) => {
-          res.status(400).json(err);
+          res.status(400).json(err);  
         });
     }
   });
-  
+
+
   // apply for a job [todo: test: done]
   router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
     const user = req.user;
-    if (user.type != "applicant") {
-      res.status(401).json({
-        message: "You don't have permissions to apply for a job",
+    if (user.type === "recruiter") {
+      Recruiter.findOne({userId: user._id})
+        .then((recruiter) => {
+          if (recruiter) {
+            recruiter.notifications.push({
+              message: "New job application received"
+            });
+            return recruiter.save();
+          }
+        })
+        .then(() => {
+          res.json({
+            message: "Job application successful",
+          })
+        })
+        .catch ((err) => {
+          res.status(400).json(err);
+        });
+      } else {
+        res.status(401).json({
+          message: "You don't have permissions to apply for a job",
       });
       return;
     }
+    
     const data = req.body;
     const jobId = req.params.id;
   
@@ -511,7 +533,7 @@ router.get("/user", jwtAuth, (req, res) => {
     Application.findOne({
       userId: user._id,
       jobId: jobId,
-      status: {
+      status: {  
         $nin: ["deleted", "accepted", "cancelled"],
       },
     })
@@ -551,6 +573,7 @@ router.get("/user", jwtAuth, (req, res) => {
                         Application.countDocuments({
                           userId: user._id,
                           status: "accepted",
+
                         }).then((acceptedJobs) => {
                           if (acceptedJobs === 0) {
                             const application = new Application({
@@ -560,6 +583,7 @@ router.get("/user", jwtAuth, (req, res) => {
                               status: "applied",
                               sop: data.sop,
                             });
+
                             application
                               .save()
                               .then(() => {

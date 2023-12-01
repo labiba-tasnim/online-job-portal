@@ -19,6 +19,16 @@ let schema = new mongoose.Schema(
       enum: ["recruiter", "applicant"],
       required: true,
     },
+    notifications:[{
+      message: {
+        type: String,
+      required: true
+      },
+      timestamp:{
+        type: Date,
+        default: Date.now,
+      },  
+    }]
   },
   { collation: { locale: "en" } }
 );
