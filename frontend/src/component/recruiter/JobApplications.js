@@ -18,7 +18,7 @@ import {
   Avatar,
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
-import Rating from "@material-ui/lab/Rating";
+import Box from '@material-ui/core/Box';
 import axios from "axios";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
@@ -261,12 +261,8 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-            
-                
-            
             </Grid>
           </Grid>
-
           <Grid item>
             <Button
               variant="contained"
@@ -305,7 +301,7 @@ const ApplicationTile = (props) => {
     finished: "#4EA5D9",
   };
 
-  const getResume = () => {
+  /*const getResume = () => {
     if (
       application.jobApplicant.resume &&
       application.jobApplicant.resume !== ""
@@ -336,7 +332,7 @@ const ApplicationTile = (props) => {
         message: "No resume found",
       });
     }
-  };
+  };*/
 
   const updateStatus = (status) => {
     const address = `${apiList.applications}/${application._id}`;
@@ -371,66 +367,106 @@ const ApplicationTile = (props) => {
   const buttonSet = {
     applied: (
       <>
-        <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["shortlisted"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("shortlisted")}
+        <Grid 
+          item
+          container
+          xs
+          justify="center"
+          alignItems="center"
           >
-            Shortlist
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                width: "100%",
+                height: "30%",
+                background: colorSet["shortlisted"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("shortlisted")}
+            >
+              Shortlist
+            </Button>
+          
         </Grid>
-        <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["rejected"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("rejected")}
+        <Grid
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center"
           >
-            Reject
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                width: "100%",
+                height: "30%",
+                background: colorSet["rejected"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("rejected")}
+            >
+              Reject
+            </Button>
         </Grid>
       </>
     ),
     shortlisted: (
       <>
-        <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["accepted"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("accepted")}
+        <Grid
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center"
           >
-            Accept
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                width: "100%",
+                height: "30%",
+                background: colorSet["accepted"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("accepted")}
+            >
+              Accept
+            </Button>
         </Grid>
-        <Grid item xs>
-          <Button
-            className={classes.statusBlock}
-            style={{
-              background: colorSet["rejected"],
-              color: "#ffffff",
-            }}
-            onClick={() => updateStatus("rejected")}
+        <Grid
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center"
           >
-            Reject
-          </Button>
+            <Button
+              className={classes.statusBlock}
+              style={{
+                width: "100%",
+                height: "30%",
+                background: colorSet["rejected"],
+                color: "#ffffff",
+              }}
+              onClick={() => updateStatus("rejected")}
+            >
+              Reject
+            </Button>
         </Grid>
       </>
     ),
     rejected: (
       <>
-        <Grid item xs>
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
           <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%",
+              height: "50%",
               background: colorSet["rejected"],
               color: "#ffffff",
             }}
@@ -442,10 +478,17 @@ const ApplicationTile = (props) => {
     ),
     accepted: (
       <>
-        <Grid item xs>
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
           <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%",
+              height: "50%",
               background: colorSet["accepted"],
               color: "#ffffff",
             }}
@@ -457,10 +500,17 @@ const ApplicationTile = (props) => {
     ),
     cancelled: (
       <>
-        <Grid item xs>
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
           <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%",
+              height: "50%",
               background: colorSet["cancelled"],
               color: "#ffffff",
             }}
@@ -472,10 +522,17 @@ const ApplicationTile = (props) => {
     ),
     finished: (
       <>
-        <Grid item xs>
+        <Grid 
+          item 
+          container
+          xs 
+          justify="center"
+          alignItems="center">
           <Paper
             className={classes.statusBlock}
             style={{
+              width: "100%',
+              height: "50%",
               background: colorSet["finished"],
               color: "#ffffff",
             }}
@@ -523,7 +580,7 @@ const ApplicationTile = (props) => {
               .join(", ")}
           </Grid>
           <Grid item>
-            SOP: {application.sop !== "" ? application.sop : "Not Submitted"}
+            Expected Salary: {application.sop !== "" ? application.sop : "Not Submitted"}
           </Grid>
           <Grid item>
             {application.jobApplicant.skills.map((skill) => (

@@ -19,6 +19,7 @@ import {
 } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Box from '@material-ui/core/Box';
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
@@ -454,7 +455,7 @@ const ApplicationTile = (props) => {
           <Grid item>Role: {application.job.jobType}</Grid>
           <Grid item>Applied On: {appliedOn.toLocaleDateString()}</Grid>
           <Grid item>
-            SOP: {application.sop !== "" ? application.sop : "Not Submitted"}
+            Expected Salary: {application.sop !== "" ? application.sop : "Not Submitted"}
           </Grid>
           <Grid item>
             {application.jobApplicant.skills.map((skill) => (
@@ -462,17 +463,21 @@ const ApplicationTile = (props) => {
             ))}
           </Grid>
         </Grid>
-        <Grid item container direction="column" xs={3}>
-          <Grid item>
-            
-          </Grid>
-          <Grid item container xs>
+        <Grid 
+          item 
+          container 
+          xs
+          justify="center"  
+          alignItems="center"
+          >
             {/* {buttonSet[application.status]} */}
             <Button
               variant="contained"
               color="primary"
               className={classes.statusBlock}
               style={{
+                width: "100%",
+                height: "100%",
                 background: "#09BC8A",
               }}
               onClick={() => {
@@ -481,7 +486,6 @@ const ApplicationTile = (props) => {
             >
               End Job
             </Button>
-          </Grid>
         </Grid>
       </Grid>
       <Modal

@@ -23,6 +23,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import { SetPopupContext } from "../App";
 
@@ -67,6 +69,7 @@ const JobTile = (props) => {
   const handleApply = () => {
     console.log(job._id);
     console.log(sop);
+    
     axios
       .post(
         `${apiList.jobs}/${job._id}/applications`,
@@ -156,7 +159,7 @@ const JobTile = (props) => {
             outline: "none",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "centre",
             minWidth: "50%",
             alignItems: "center",
           }}
@@ -455,10 +458,8 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-              
             </Grid>
           </Grid>
-
           <Grid item>
             <Button
               variant="contained"
@@ -496,10 +497,6 @@ const Home = (props) => {
         desc: false,
       },
       duration: {
-        status: false,
-        desc: false,
-      },
-      rating: {
         status: false,
         desc: false,
       },
