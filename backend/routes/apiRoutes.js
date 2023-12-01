@@ -338,7 +338,7 @@ router.get("/user", jwtAuth, (req, res) => {
     const user = req.user;
     if (user.type === "recruiter") { 
       Recruiter.findOne({ userId: user._id })
-        .then((recruiter) => {
+        .then((recruiter) => {    
           if (recruiter == null) {
             res.status(404).json({
               message: "User does not exist",
@@ -350,6 +350,7 @@ router.get("/user", jwtAuth, (req, res) => {
         .catch((err) => {
           res.status(400).json(err);
         });
+
     } else {
       JobApplicant.findOne({ userId: user._id })
         .then((jobApplicant) => {
@@ -470,12 +471,12 @@ router.get("/user", jwtAuth, (req, res) => {
           if (data.resume) {
             jobApplicant.resume = data.resume;
           }
-          if (data.profile) {
+          if (data.profile) {   
             jobApplicant.profile = data.profile;
           }
           console.log(jobApplicant);
           jobApplicant
-            .save()
+            .save()  
             .then(() => {
               res.json({
                 message: "User information updated successfully",
@@ -486,16 +487,12 @@ router.get("/user", jwtAuth, (req, res) => {
             });
         })
         .catch((err) => {
-          res.status(400).json(err);
+          res.status(400).json(err);  
         });
     }
   });
 
-  // router.post("/jobs/:id/applications", jwtAuth, (req,res) => {
-  //   const user = req.user;
-  //   Recruiter.findOne({_id})
-  // })
-  
+
   // apply for a job [todo: test: done]
   router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
     const user = req.user;
@@ -536,7 +533,7 @@ router.get("/user", jwtAuth, (req, res) => {
     Application.findOne({
       userId: user._id,
       jobId: jobId,
-      status: {
+      status: {  
         $nin: ["deleted", "accepted", "cancelled"],
       },
     })
@@ -576,6 +573,7 @@ router.get("/user", jwtAuth, (req, res) => {
                         Application.countDocuments({
                           userId: user._id,
                           status: "accepted",
+
                         }).then((acceptedJobs) => {
                           if (acceptedJobs === 0) {
                             const application = new Application({
@@ -585,6 +583,7 @@ router.get("/user", jwtAuth, (req, res) => {
                               status: "applied",
                               sop: data.sop,
                             });
+
                             application
                               .save()
                               .then(() => {
