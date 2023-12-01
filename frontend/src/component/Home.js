@@ -16,13 +16,15 @@ import {
   MenuItem,
   Checkbox,
 } from "@material-ui/core";
-import Rating from "@material-ui/lab/Rating";
+import Box from '@material-ui/core/Box';
 import Pagination from "@material-ui/lab/Pagination";
 import axios from "axios";
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import { SetPopupContext } from "../App";
 
@@ -35,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     width: "100%",
-    height: "100%",
+    height: "30%",
   },
   jobTileOuter: {
     padding: "30px",
@@ -67,6 +69,7 @@ const JobTile = (props) => {
   const handleApply = () => {
     console.log(job._id);
     console.log(sop);
+    
     axios
       .post(
         `${apiList.jobs}/${job._id}/applications`,
@@ -122,7 +125,20 @@ const JobTile = (props) => {
             ))}
           </Grid>
         </Grid>
-        <Grid item xs={3}>
+      </Grid>
+      <Grid
+        item
+        container
+        xs={12}
+        justify="center"  
+        alignItems="flex-end"  
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
           <Button
             variant="contained"
             color="primary"
@@ -134,7 +150,7 @@ const JobTile = (props) => {
           >
             Apply
           </Button>
-        </Grid>
+        </Box>
       </Grid>
       <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
         <Paper
@@ -143,36 +159,41 @@ const JobTile = (props) => {
             outline: "none",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "centre",
             minWidth: "50%",
             alignItems: "center",
           }}
         >
-          <TextField
-            label="Write SOP (upto 250 words)"
-            multiline
-            rows={8}
-            style={{ width: "100%", marginBottom: "30px" }}
-            variant="outlined"
-            value={sop}
-            onChange={(event) => {
-              if (
-                event.target.value.split(" ").filter(function (n) {
-                  return n != "";
-                }).length <= 250
-              ) {
-                setSop(event.target.value);
-              }
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ padding: "10px 50px" }}
-            onClick={() => handleApply()}
-          >
-            Submit
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              How much would you like to be paid for this Job?
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label=""
+                style={{ width: "100%", marginBottom: "30px" }}
+                variant="outlined"
+                value={sop}
+                onChange={(event) => {
+                  if (
+                    event.target.value.split(" ").filter(function (n) {
+                      return n != "";
+                    }).length <= 250
+                  ) {
+                    setSop(event.target.value);
+                  }
+                }}
+              />
+            </Grid>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ padding: "10px 50px" }}
+              onClick={() => handleApply()}
+            >
+              Submit
+            </Button>
+          </Grid>
         </Paper>
       </Modal>
     </Paper>
@@ -435,65 +456,8 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-              <Grid
-                item
-                container
-                xs={4}
-                justify="space-around"
-                alignItems="center"
-                style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
-              >
-                <Grid item>
-                  <Checkbox
-                    name="rating"
-                    checked={searchOptions.sort.rating.status}
-                    onChange={(event) =>
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          rating: {
-                            ...searchOptions.sort.rating,
-                            status: event.target.checked,
-                          },
-                        },
-                      })
-                    }
-                    id="rating"
-                  />
-                </Grid>
-                <Grid item>
-                  <label for="rating">
-                    <Typography>Rating</Typography>
-                  </label>
-                </Grid>
-                <Grid item>
-                  <IconButton
-                    disabled={!searchOptions.sort.rating.status}
-                    onClick={() => {
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          rating: {
-                            ...searchOptions.sort.rating,
-                            desc: !searchOptions.sort.rating.desc,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    {searchOptions.sort.rating.desc ? (
-                      <ArrowDownwardIcon />
-                    ) : (
-                      <ArrowUpwardIcon />
-                    )}
-                  </IconButton>
-                </Grid>
-              </Grid>
             </Grid>
           </Grid>
-
           <Grid item>
             <Button
               variant="contained"
@@ -515,6 +479,7 @@ const Home = (props) => {
   const [currPage, setCurrPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(false);
+
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
@@ -530,10 +495,6 @@ const Home = (props) => {
         desc: false,
       },
       duration: {
-        status: false,
-        desc: false,
-      },
-      rating: {
         status: false,
         desc: false,
       },
