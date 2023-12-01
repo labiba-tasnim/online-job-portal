@@ -16,6 +16,7 @@ import {
   MenuItem,
   Checkbox,
 } from "@material-ui/core";
+import Box from '@material-ui/core/Box';
 import axios from "axios";
 
 import { SetPopupContext } from "../App";
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   statusBlock: {
     width: "100%",
-    height: "100%",
+    height: "30%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -74,7 +75,7 @@ const ApplicationTile = (props) => {
           </Grid>
           <Grid item>Posted By: {application.recruiter.name}</Grid>
           <Grid item>Role : {application.job.jobType}</Grid>
-          <Grid item>Salary : &#8377; {application.job.salary} per month</Grid>
+          <Grid item>Salary : {application.job.salary} tk per month</Grid>
           <Grid item>
             Duration :{" "}
             {application.job.duration !== 0
@@ -94,15 +95,25 @@ const ApplicationTile = (props) => {
         </Grid>
         <Grid item container direction="column" xs={3}>
           <Grid item xs>
-            <Paper
-              className={classes.statusBlock}
-              style={{
-                background: colorSet[application.status],
-                color: "#ffffff",
-              }}
+            <Box
+            //added Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              height="100%"
             >
-              {application.status}
-            </Paper>
+              <Box
+                component={Paper}
+                className={classes.statusBlock}
+                style={{
+                  background: colorSet[application.status],
+                  color: "#ffffff",
+                }}
+              >
+                {application.status}
+              </Box>
+            </Box>
           </Grid>
         </Grid>
       </Grid>

@@ -155,7 +155,7 @@ const JobTile = (props) => {
             <Typography variant="h5">{job.title}</Typography>
           </Grid>
           <Grid item>Role : {job.jobType}</Grid>
-          <Grid item>Salary : &#8377; {job.salary} per month</Grid>
+          <Grid item>Salary : {job.salary} tk per month</Grid>
           <Grid item>
             Duration :{" "}
             {job.duration !== 0 ? `${job.duration} month` : `Flexible`}
@@ -602,62 +602,10 @@ const FilterPopup = (props) => {
                   </IconButton>
                 </Grid>
               </Grid>
-              <Grid
-                item
-                container
-                xs={4}
-                justify="space-around"
-                alignItems="center"
-                style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
-              >
-                <Grid item>
-                  <Checkbox
-                    name="rating"
-                    checked={searchOptions.sort.rating.status}
-                    onChange={(event) =>
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          rating: {
-                            ...searchOptions.sort.rating,
-                            status: event.target.checked,
-                          },
-                        },
-                      })
-                    }
-                    id="rating"
-                  />
-                </Grid>
-                <Grid item>
-                  <label for="rating">
-                    <Typography>Rating</Typography>
-                  </label>
-                </Grid>
-                <Grid item>
-                  <IconButton
-                    disabled={!searchOptions.sort.rating.status}
-                    onClick={() => {
-                      setSearchOptions({
-                        ...searchOptions,
-                        sort: {
-                          ...searchOptions.sort,
-                          rating: {
-                            ...searchOptions.sort.rating,
-                            desc: !searchOptions.sort.rating.desc,
-                          },
-                        },
-                      });
-                    }}
-                  >
-                    {searchOptions.sort.rating.desc ? (
-                      <ArrowDownwardIcon />
-                    ) : (
-                      <ArrowUpwardIcon />
-                    )}
-                  </IconButton>
-                </Grid>
-              </Grid>
+              
+                
+                
+              
             </Grid>
           </Grid>
 
@@ -682,6 +630,7 @@ const MyJobs = (props) => {
   const [hasNextPage, setHasNextPage] = useState(false);
   const [currPage, setCurrPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
+
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
