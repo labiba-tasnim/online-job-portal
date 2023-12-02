@@ -22,6 +22,16 @@ let schema = new mongoose.Schema(
     bio: {
       type: String,
     },
+    notifications:[{
+      message: {
+        type: String,
+      required: true
+      },
+      timestamp:{
+        type: Date,
+        default: Date.now,
+      },  
+    }]
   },
   { collation: { locale: "en" } }
 );
