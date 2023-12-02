@@ -624,7 +624,7 @@ router.get("/user", jwtAuth, (req, res) => {
           res.status(400).json(err);
         });
     }
-});
+  });
 
   
   // recruiter gets applications for a particular job [pagination] [todo: test: done]
