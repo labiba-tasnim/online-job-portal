@@ -3,6 +3,10 @@ import {
   Toolbar,
   Typography,
   Button,
+  Badge,
+  IconButton,
+  Menu,
+  MenuItem,
   makeStyles,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
@@ -53,6 +57,9 @@ const Navbar = (props) => {
               </Button>
               <Button color="inherit" onClick={() => handleClick("/profile")}>
                 Profile
+              </Button>
+              <Button color="inherit" onClick={() => handleClick("/notifications")}>
+                Notifications
               </Button>
               <Button color="inherit" onClick={() => handleClick("/logout")}>
                 Logout

@@ -8,6 +8,7 @@ import Login from "./component/Login";
 import Logout from "./component/Logout";
 import Signup from "./component/Signup";
 import Home from "./component/Home";
+import Notifications from "./component/Notifications";
 import Applications from "./component/Applications";
 import Profile from "./component/Profile";
 import CreateJobs from "./component/recruiter/CreateJobs";
@@ -85,6 +86,9 @@ function App() {
               </Route>
               <Route exact path="/employees">
                 <AcceptedApplicants />
+              </Route>
+              <Route exact path="/notifications">
+                <Notifications />
               </Route>
               <Route>
                 <ErrorPage />
