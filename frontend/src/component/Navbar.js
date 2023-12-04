@@ -55,6 +55,9 @@ const Navbar = (props) => {
               <Button color="inherit" onClick={() => handleClick("/employees")}>
                 Employees
               </Button>
+              <Button color="inherit" onClick={() => handleClick("/connections")}>
+                Connections
+              </Button>
               <Button color="inherit" onClick={() => handleClick("/profile")}>
                 Profile
               </Button>
@@ -75,6 +78,9 @@ const Navbar = (props) => {
                 onClick={() => handleClick("/applications")}
               >
                 Applications
+              </Button>
+              <Button color="inherit" onClick={() => handleClick("/connections")}>
+                Connections
               </Button>
               <Button color="inherit" onClick={() => handleClick("/profile")}>
                 Profile
