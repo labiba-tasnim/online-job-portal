@@ -531,109 +531,64 @@ router.get("/user", jwtAuth, (req, res) => {
 
     const results = await Connection.aggregate([
       {
-        $match: {
-          $or: [
-            { userA: mongoose.Types.ObjectId(myId) },
-            { userB: mongoose.Types.ObjectId(myId) },
-          ],
-        },
+          $match: {
+              $or: [
+                  { userA: mongoose.Types.ObjectId(myId) },
+                  { userB: mongoose.Types.ObjectId(myId) },
+              ],
+          },
       },
       {
-        $lookup: {
-          from: 'recruiterinfos',
-          let: { userA: '$userA', userB: '$userB' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $or: [
-                    { $eq: ['$userId', '$$userA'] },
-                    { $eq: ['$userId', '$$userB'] },
-                  ],
-                },
+          $project: {
+              user: {
+                  $cond: {
+                      if: { $eq: ['$userA', mongoose.Types.ObjectId(myId)] },
+                      then: '$userB',
+                      else: '$userA',
+                  },
               },
-            },
-          ],
-          as: 'recruiterConnection',
-        },
-      },
-      {
-        $lookup: {
-          from: 'jobapplicantinfos',
-          let: { userA: '$userA', userB: '$userB' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $or: [
-                    { $eq: ['$userId', '$$userA'] },
-                    { $eq: ['$userId', '$$userB'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'applicantConnection',
-        },
-      },
-      {
-        $lookup: {
-          from: 'userauths',
-          localField: 'userA',
-          foreignField: '_id',
-          as: 'userA',
-        },
-      },
-      {
-        $lookup: {
-          from: 'userauths',
-          localField: 'userB',
-          foreignField: '_id',
-          as: 'userB',
-        },
-      },
-      { $unwind: { path: '$userA', preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: '$userB', preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: '$recruiterConnection', preserveNullAndEmptyArrays: true } },
-      { $unwind: { path: '$applicantConnection', preserveNullAndEmptyArrays: true } },
-      {
-        $project: {
-          connection: {
-            $cond: {
-              if: { $eq: ['$userA._id', mongoose.Types.ObjectId(myId)] },
-              then: '$userB',
-              else: '$userA',
-            },
           },
-          user: {
-            $cond: {
-              if: { $eq: ['$userA._id', mongoose.Types.ObjectId(myId)] },
-              then: '$userB',
-              else: '$userA',
-            },
-          },
-          recruiterConnection: 1,
-          applicantConnection: 1,
-        },
       },
       {
-        $project: {
-          connection: {
-            $cond: {
-              if: '$recruiterConnection',
-              then: '$recruiterConnection',
-              else: '$applicantConnection',
-            },
+          $lookup: {
+              from: 'recruiterinfos',
+              localField: 'user',
+              foreignField: 'userId',
+              as: 'recruiter',
           },
-          user: 1,
-        },
       },
       {
-        $match: {
-          'connection.userId': { $ne: mongoose.Types.ObjectId(myId) },
-        },
+          $lookup: {
+              from: 'jobapplicantinfos',
+              localField: 'user',
+              foreignField: 'userId',
+              as: 'applicant',
+          },
       },
-    ]);
+      {
+          $lookup: {
+              from: 'userauths',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user',
+          },
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$recruiter', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$applicant', preserveNullAndEmptyArrays: true } },
+      {
+          $project: {
+              user: 1,
+              recruiter: 1,
+              applicant: 1,
+          },
+      },
+      {
+          $match: {
+              'user._id': { $ne: mongoose.Types.ObjectId(myId) },
+          },
+      },
+  ]);
     
 
     res.send(results);

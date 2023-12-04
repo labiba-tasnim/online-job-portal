@@ -47,7 +47,7 @@ function Connections(props) {
     const headers = {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     };
-    await axios.delete(`${apiList.connection}/${conn.connection.userId}`, { headers });
+    await axios.delete(`${apiList.connection}/${conn.user._id}`, { headers });
     fetchConnections();
   }
 
@@ -92,10 +92,10 @@ function Connections(props) {
     }
 
     return connections.map(result => 
-      <Box key={result.connection._id} display='flex' alignItems='center' justifyContent='space-between' flexDirection='row' margin='8px 0'>
+      <Box key={result.user._id} display='flex' alignItems='center' justifyContent='space-between' flexDirection='row' margin='8px 0'>
         <Box display='flex' flexDirection='row'>
-          <Avatar alt={result.connection.name} style={{ marginRight: '10px', width: 34, height: 34 }} />
-          <div>{result.connection.name}</div>
+          <Avatar alt={result[result.user.type].name} style={{ marginRight: '10px', width: 34, height: 34 }} />
+          <div>{result[result.user.type].name}</div>
         </Box>
         <Button variant='contained' disabled={result.added} size="small" style={{ marginLeft: 10, backgroundColor: 'orange', color: 'black' }} onClick={() => handleConnectionRemove(result)}>Remove</Button>
       </Box>
