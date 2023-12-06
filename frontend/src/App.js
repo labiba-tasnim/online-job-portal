@@ -8,6 +8,7 @@ import Login from "./component/Login";
 import Logout from "./component/Logout";
 import Signup from "./component/Signup";
 import Home from "./component/Home";
+import Connections from "./component/Connections";
 import Notifications from "./component/Notifications";
 import Applications from "./component/Applications";
 import Profile from "./component/Profile";
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   body: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     minHeight: "98vh",
     paddingTop: "64px",
@@ -67,6 +68,9 @@ function App() {
               </Route>
               <Route exact path="/home">
                 <Home />
+              </Route>
+              <Route exact path="/connections">
+                <Connections />
               </Route>
               <Route exact path="/applications">
                 <Applications />

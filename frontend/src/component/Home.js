@@ -568,15 +568,10 @@ const Home = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setJobs((prevJobs) =>
           [
             ...prevJobs,
-            ...response.data.results.filter((obj) => {
-              const today = new Date();
-              const deadline = new Date(obj.deadline);
-              return deadline > today;
-            })
+            ...response.data.results
           ]
         );
 
@@ -661,6 +656,7 @@ const Home = (props) => {
           alignItems="stretch"
           justify="center"
         >
+          {console.log('jobsss', jobs)}
           {jobs.length > 0 ? (
             jobs.map((job) => {
               return <JobTile job={job} key={job._id} />;

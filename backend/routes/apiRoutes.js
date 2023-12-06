@@ -8,6 +8,7 @@ const JobApplicant = require("../db/JobApplicant");
 const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
+const Connection = require("../db/Connection");
 
 const router = express.Router();
 
@@ -490,6 +491,180 @@ router.get("/user", jwtAuth, (req, res) => {
           res.status(400).json(err);  
         });
     }
+  });
+
+  // Connection
+  router.post('/user/me/connections/:id', jwtAuth, async (req, res) => {
+    const user = req.user;
+    const { id } = req.params;
+    const myId = user._id.toString();
+
+    if (myId === id) {
+      return res.status(400).send('Cannot connect with self');
+    }
+
+    const existingConnection = await Connection.findOne({ 
+      $or: [
+        { userA: id, userB: myId },
+        { userA: myId, userB: id }
+      ]
+    }).lean().exec();
+
+    if (existingConnection) {
+      return res.send(existingConnection);
+    }
+
+    const connection = new Connection({
+      userA: myId,
+      userB: id
+    });
+
+    await connection.save();
+
+    res.send(connection);
+  });
+
+  router.get('/user/me/connections', jwtAuth, async (req, res) => {
+    const user = req.user;
+    const myId = user._id.toString();
+    console.log('idsd', myId);
+
+    const results = await Connection.aggregate([
+      {
+          $match: {
+              $or: [
+                  { userA: mongoose.Types.ObjectId(myId) },
+                  { userB: mongoose.Types.ObjectId(myId) },
+              ],
+          },
+      },
+      {
+          $project: {
+              user: {
+                  $cond: {
+                      if: { $eq: ['$userA', mongoose.Types.ObjectId(myId)] },
+                      then: '$userB',
+                      else: '$userA',
+                  },
+              },
+          },
+      },
+      {
+          $lookup: {
+              from: 'recruiterinfos',
+              localField: 'user',
+              foreignField: 'userId',
+              as: 'recruiter',
+          },
+      },
+      {
+          $lookup: {
+              from: 'jobapplicantinfos',
+              localField: 'user',
+              foreignField: 'userId',
+              as: 'applicant',
+          },
+      },
+      {
+          $lookup: {
+              from: 'userauths',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user',
+          },
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$recruiter', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$applicant', preserveNullAndEmptyArrays: true } },
+      {
+          $project: {
+              user: 1,
+              recruiter: 1,
+              applicant: 1,
+          },
+      },
+      {
+          $match: {
+              'user._id': { $ne: mongoose.Types.ObjectId(myId) },
+          },
+      },
+  ]);
+    
+
+    res.send(results);
+  });
+
+  router.delete('/user/me/connections/:id', jwtAuth, async (req, res) => {
+    const myId = req.user._id;
+    const connId = req.params.id;
+
+    const op = await Connection.findOneAndDelete({
+      $or: [
+        { userA: myId, userB: connId },
+        { userA: connId, userB: myId },
+
+      ]
+    })
+
+    res.send({ op });
+  });
+
+
+
+  // Search
+  router.get('/search/user', jwtAuth, async (req, res) => {
+    const { query } = req.query;
+    const results = await User.aggregate([
+      {
+        $lookup: {
+          from: "recruiterinfos",
+          localField: "_id",
+          foreignField: "userId",
+          as: "recruiter",
+        },
+      },
+      {
+        $lookup: {
+          from: "jobapplicantinfos",
+          localField: "_id",
+          foreignField: "userId",
+          as: "applicant",
+        },
+      },
+      { $unwind: {
+        path: '$applicant',
+        preserveNullAndEmptyArrays: true,
+      }, },
+      { $unwind: {
+        path: '$recruiter',
+        preserveNullAndEmptyArrays: true,
+      }, },
+      {
+        $match: {
+          $or: [
+            { 'applicant.name': { $regex: new RegExp(query, 'i') } },
+            { 'recruiter.name': { $regex: new RegExp(query, 'i') } },
+          ],
+          _id: { $ne: req.user._id }
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          email: 1,
+          type: 1,
+          name: {
+            $cond: {
+              if: { $eq: ['$type', 'applicant'] },
+              then: '$applicant.name',
+              else: '$recruiter.name',
+            },
+          },
+        },
+      },
+    ]);
+
+    res.send({ results });
   });
 
 
