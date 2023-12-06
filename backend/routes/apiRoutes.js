@@ -1,12 +1,14 @@
 const express = require("express");
 const jwtAuth = require("../lib/jwtAuth");
 const mongoose = require("mongoose");
+// const socketIO = require('socket.io')
 
 const User = require("../db/User");
 const JobApplicant = require("../db/JobApplicant");
 const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
+const Connection = require("../db/Connection");
 
 const router = express.Router();
 
@@ -335,9 +337,9 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
 // get user's personal details
 router.get("/user", jwtAuth, (req, res) => {
     const user = req.user;
-    if (user.type === "recruiter") {
+    if (user.type === "recruiter") { 
       Recruiter.findOne({ userId: user._id })
-        .then((recruiter) => {
+        .then((recruiter) => {    
           if (recruiter == null) {
             res.status(404).json({
               message: "User does not exist",
@@ -349,6 +351,7 @@ router.get("/user", jwtAuth, (req, res) => {
         .catch((err) => {
           res.status(400).json(err);
         });
+
     } else {
       JobApplicant.findOne({ userId: user._id })
         .then((jobApplicant) => {
@@ -469,12 +472,12 @@ router.get("/user", jwtAuth, (req, res) => {
           if (data.resume) {
             jobApplicant.resume = data.resume;
           }
-          if (data.profile) {
+          if (data.profile) {   
             jobApplicant.profile = data.profile;
           }
           console.log(jobApplicant);
           jobApplicant
-            .save()
+            .save()  
             .then(() => {
               res.json({
                 message: "User information updated successfully",
@@ -485,126 +488,319 @@ router.get("/user", jwtAuth, (req, res) => {
             });
         })
         .catch((err) => {
+          res.status(400).json(err);  
+        });
+    }
+  });
+
+  // Connection
+  router.post('/user/me/connections/:id', jwtAuth, async (req, res) => {
+    const user = req.user;
+    const { id } = req.params;
+    const myId = user._id.toString();
+
+    if (myId === id) {
+      return res.status(400).send('Cannot connect with self');
+    }
+
+    const existingConnection = await Connection.findOne({ 
+      $or: [
+        { userA: id, userB: myId },
+        { userA: myId, userB: id }
+      ]
+    }).lean().exec();
+
+    if (existingConnection) {
+      return res.send(existingConnection);
+    }
+
+    const connection = new Connection({
+      userA: myId,
+      userB: id
+    });
+
+    await connection.save();
+
+    res.send(connection);
+  });
+
+  router.get('/user/me/connections', jwtAuth, async (req, res) => {
+    const user = req.user;
+    const myId = user._id.toString();
+    console.log('idsd', myId);
+
+    const results = await Connection.aggregate([
+      {
+          $match: {
+              $or: [
+                  { userA: mongoose.Types.ObjectId(myId) },
+                  { userB: mongoose.Types.ObjectId(myId) },
+              ],
+          },
+      },
+      {
+          $project: {
+              user: {
+                  $cond: {
+                      if: { $eq: ['$userA', mongoose.Types.ObjectId(myId)] },
+                      then: '$userB',
+                      else: '$userA',
+                  },
+              },
+          },
+      },
+      {
+          $lookup: {
+              from: 'recruiterinfos',
+              localField: 'user',
+              foreignField: 'userId',
+              as: 'recruiter',
+          },
+      },
+      {
+          $lookup: {
+              from: 'jobapplicantinfos',
+              localField: 'user',
+              foreignField: 'userId',
+              as: 'applicant',
+          },
+      },
+      {
+          $lookup: {
+              from: 'userauths',
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user',
+          },
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$recruiter', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: '$applicant', preserveNullAndEmptyArrays: true } },
+      {
+          $project: {
+              user: 1,
+              recruiter: 1,
+              applicant: 1,
+          },
+      },
+      {
+          $match: {
+              'user._id': { $ne: mongoose.Types.ObjectId(myId) },
+          },
+      },
+  ]);
+    
+
+    res.send(results);
+  });
+
+  router.delete('/user/me/connections/:id', jwtAuth, async (req, res) => {
+    const myId = req.user._id;
+    const connId = req.params.id;
+
+    const op = await Connection.findOneAndDelete({
+      $or: [
+        { userA: myId, userB: connId },
+        { userA: connId, userB: myId },
+
+      ]
+    })
+
+    res.send({ op });
+  });
+
+
+
+  // Search
+  router.get('/search/user', jwtAuth, async (req, res) => {
+    const { query } = req.query;
+    const results = await User.aggregate([
+      {
+        $lookup: {
+          from: "recruiterinfos",
+          localField: "_id",
+          foreignField: "userId",
+          as: "recruiter",
+        },
+      },
+      {
+        $lookup: {
+          from: "jobapplicantinfos",
+          localField: "_id",
+          foreignField: "userId",
+          as: "applicant",
+        },
+      },
+      { $unwind: {
+        path: '$applicant',
+        preserveNullAndEmptyArrays: true,
+      }, },
+      { $unwind: {
+        path: '$recruiter',
+        preserveNullAndEmptyArrays: true,
+      }, },
+      {
+        $match: {
+          $or: [
+            { 'applicant.name': { $regex: new RegExp(query, 'i') } },
+            { 'recruiter.name': { $regex: new RegExp(query, 'i') } },
+          ],
+          _id: { $ne: req.user._id }
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          email: 1,
+          type: 1,
+          name: {
+            $cond: {
+              if: { $eq: ['$type', 'applicant'] },
+              then: '$applicant.name',
+              else: '$recruiter.name',
+            },
+          },
+        },
+      },
+    ]);
+
+    res.send({ results });
+  });
+
+
+  // apply for a job [todo: test: done]
+
+  router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
+    const user = req.user;
+
+    if (user.type === "recruiter") {
+      Recruiter.findOne({ userId: user._id })
+        .then((recruiter) => {
+          if (recruiter) {
+            recruiter.notifications.push({
+              message: "New job application received",
+            });
+            return recruiter.save();
+          }
+        })
+        .then(() => {
+          res.json({
+            message: "Job application successful",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    } else {
+      const data = req.body;
+      const jobId = req.params.id;
+
+      // check whether applied previously
+      // find job
+      // check count of active applications < limit
+      // check user had < 10 active applications && check if the user is not having any accepted jobs (user id)
+      // store the data in applications
+
+      Application.findOne({
+        userId: user._id,
+        jobId: jobId,
+        status: {
+          $nin: ["deleted", "accepted", "cancelled", "finished"],
+        },
+      })
+        .then((appliedApplication) => {
+          console.log(appliedApplication);
+          if (appliedApplication !== null) {
+            res.status(400).json({
+              message: "You have already applied for this job",
+            });
+            return;
+          }
+
+          Job.findOne({ _id: jobId })
+            .then((job) => {
+              if (job === null) {
+                res.status(404).json({
+                  message: "Job does not exist",
+                });
+                return;
+              }
+              Application.countDocuments({
+                jobId: jobId,
+                status: {
+                  $nin: ["rejected", "deleted", "cancelled", "finished"],
+                },
+              })
+                .then((activeApplicationCount) => {
+                  if (activeApplicationCount < job.maxApplicants) {
+                    Application.countDocuments({
+                      userId: user._id,
+                      status: {
+                        $nin: ["rejected", "deleted", "cancelled", "finished"],
+                      },
+                    })
+                      .then((myActiveApplicationCount) => {
+                        if (myActiveApplicationCount < 10) {
+                          Application.countDocuments({
+                            userId: user._id,
+                            status: "accepted",
+                          }).then((acceptedJobs) => {
+                            if (acceptedJobs === 0) {
+                              const application = new Application({
+                                userId: user._id,
+                                recruiterId: job.userId,
+                                jobId: job._id,
+                                status: "applied",
+                                sop: data.sop,
+                              });
+
+                              application
+                                .save()
+                                .then(() => {
+                                  res.json({
+                                    message: "Job application successful",
+                                  });
+                                })
+                                .catch((err) => {
+                                  res.status(400).json(err);
+                                });
+                            } else {
+                              res.status(400).json({
+                                message:
+                                  "You already have an accepted job. Hence you cannot apply.",
+                              });
+                            }
+                          });
+                        } else {
+                          res.status(400).json({
+                            message:
+                              "You have 10 active applications. Hence you cannot apply.",
+                          });
+                        }
+                      })
+                      .catch((err) => {
+                        res.status(400).json(err);
+                      });
+                  } else {
+                    res.status(400).json({
+                      message: "Application limit reached",
+                    });
+                  }
+                })
+                .catch((err) => {
+                  res.status(400).json(err);
+                });
+            })
+            .catch((err) => {
+              res.status(400).json(err);
+            });
+        })
+        .catch((err) => {
           res.status(400).json(err);
         });
     }
   });
-  
-  // apply for a job [todo: test: done]
-  router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
-    const user = req.user;
-    if (user.type != "applicant") {
-      res.status(401).json({
-        message: "You don't have permissions to apply for a job",
-      });
-      return;
-    }
-    const data = req.body;
-    const jobId = req.params.id;
-  
-    // check whether applied previously
-    // find job
-    // check count of active applications < limit
-    // check user had < 10 active applications && check if user is not having any accepted jobs (user id)
-    // store the data in applications
-  
-    Application.findOne({
-      userId: user._id,
-      jobId: jobId,
-      status: {
-        $nin: ["deleted", "accepted", "cancelled"],
-      },
-    })
-      .then((appliedApplication) => {
-        console.log(appliedApplication);
-        if (appliedApplication !== null) {
-          res.status(400).json({
-            message: "You have already applied for this job",
-          });
-          return;
-        }
-  
-        Job.findOne({ _id: jobId })
-          .then((job) => {
-            if (job === null) {
-              res.status(404).json({
-                message: "Job does not exist",
-              });
-              return;
-            }
-            Application.countDocuments({
-              jobId: jobId,
-              status: {
-                $nin: ["rejected", "deleted", "cancelled", "finished"],
-              },
-            })
-              .then((activeApplicationCount) => {
-                if (activeApplicationCount < job.maxApplicants) {
-                  Application.countDocuments({
-                    userId: user._id,
-                    status: {
-                      $nin: ["rejected", "deleted", "cancelled", "finished"],
-                    },
-                  })
-                    .then((myActiveApplicationCount) => {
-                      if (myActiveApplicationCount < 10) {
-                        Application.countDocuments({
-                          userId: user._id,
-                          status: "accepted",
-                        }).then((acceptedJobs) => {
-                          if (acceptedJobs === 0) {
-                            const application = new Application({
-                              userId: user._id,
-                              recruiterId: job.userId,
-                              jobId: job._id,
-                              status: "applied",
-                              sop: data.sop,
-                            });
-                            application
-                              .save()
-                              .then(() => {
-                                res.json({
-                                  message: "Job application successful",
-                                });
-                              })
-                              .catch((err) => {
-                                res.status(400).json(err);
-                              });
-                          } else {
-                            res.status(400).json({
-                              message:
-                                "You already have an accepted job. Hence you cannot apply.",
-                            });
-                          }
-                        });
-                      } else {
-                        res.status(400).json({
-                          message:
-                            "You have 10 active applications. Hence you cannot apply.",
-                        });
-                      }
-                    })
-                    .catch((err) => {
-                      res.status(400).json(err);
-                    });
-                } else {
-                  res.status(400).json({
-                    message: "Application limit reached",
-                  });
-                }
-              })
-              .catch((err) => {
-                res.status(400).json(err);
-              });
-          })
-          .catch((err) => {
-            res.status(400).json(err);
-          });
-      })
-      .catch((err) => {
-        res.json(400).json(err);
-      });
-  });
+
   
   // recruiter gets applications for a particular job [pagination] [todo: test: done]
   router.get("/jobs/:id/applications", jwtAuth, (req, res) => {

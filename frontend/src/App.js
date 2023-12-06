@@ -8,6 +8,8 @@ import Login from "./component/Login";
 import Logout from "./component/Logout";
 import Signup from "./component/Signup";
 import Home from "./component/Home";
+import Connections from "./component/Connections";
+import Notifications from "./component/Notifications";
 import Applications from "./component/Applications";
 import Profile from "./component/Profile";
 import CreateJobs from "./component/recruiter/CreateJobs";
@@ -17,12 +19,15 @@ import AcceptedApplicants from "./component/recruiter/AcceptedApplicants";
 import RecruiterProfile from "./component/recruiter/Profile";
 import MessagePopup from "./lib/MessagePopup";
 import isAuth, { userType } from "./lib/isAuth";
+import LearnNGrow from "./component/LearnNGrow";
+import Resources from "./component/Resources";
+import PostResources from "./component/PostResources";
 
 const useStyles = makeStyles((theme) => ({
   body: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     minHeight: "98vh",
     paddingTop: "64px",
@@ -64,6 +69,9 @@ function App() {
               <Route exact path="/home">
                 <Home />
               </Route>
+              <Route exact path="/connections">
+                <Connections />
+              </Route>
               <Route exact path="/applications">
                 <Applications />
               </Route>
@@ -85,6 +93,18 @@ function App() {
               </Route>
               <Route exact path="/employees">
                 <AcceptedApplicants />
+              </Route>
+              {/*<Route exact path="/notifications">
+                <Notifications />
+                </Route>*/}
+              <Route exact path="/learnNgrow">
+                <LearnNGrow />
+              </Route>
+              <Route exact path="/resources">
+                <Resources />
+              </Route>
+              <Route exact path="/postresources">
+                <PostResources />
               </Route>
               <Route>
                 <ErrorPage />

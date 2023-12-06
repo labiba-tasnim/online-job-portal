@@ -168,7 +168,7 @@ const JobTile = (props) => {
             <Grid item xs={12}>
               How much would you like to be paid for this Job?
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <TextField
                 label="Per Month"
                 style={{ width: "100%", marginBottom: "30px" }}
@@ -202,7 +202,7 @@ const JobTile = (props) => {
   );
 };
 
-const FilterPopup = (props) => {
+const FilterPopup = (props) => {  ////////
   const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
@@ -369,7 +369,7 @@ const FilterPopup = (props) => {
                           },
                         },
                       })
-                    }
+                    }   
                     id="salary"
                   />
                 </Grid>
@@ -568,15 +568,10 @@ const Home = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setJobs((prevJobs) =>
           [
             ...prevJobs,
-            ...response.data.results.filter((obj) => {
-              const today = new Date();
-              const deadline = new Date(obj.deadline);
-              return deadline > today;
-            })
+            ...response.data.results
           ]
         );
 
@@ -661,6 +656,7 @@ const Home = (props) => {
           alignItems="stretch"
           justify="center"
         >
+          {console.log('jobsss', jobs)}
           {jobs.length > 0 ? (
             jobs.map((job) => {
               return <JobTile job={job} key={job._id} />;

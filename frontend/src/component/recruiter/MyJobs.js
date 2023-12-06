@@ -346,7 +346,7 @@ const JobTile = (props) => {
   );
 };
 
-const FilterPopup = (props) => {
+const FilterPopup = (props) => {  //////
   const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
