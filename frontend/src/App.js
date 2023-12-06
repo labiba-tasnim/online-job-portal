@@ -19,6 +19,9 @@ import AcceptedApplicants from "./component/recruiter/AcceptedApplicants";
 import RecruiterProfile from "./component/recruiter/Profile";
 import MessagePopup from "./lib/MessagePopup";
 import isAuth, { userType } from "./lib/isAuth";
+import LearnNGrow from "./component/LearnNGrow";
+import Resources from "./component/Resources";
+import PostResources from "./component/PostResources";
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -91,8 +94,17 @@ function App() {
               <Route exact path="/employees">
                 <AcceptedApplicants />
               </Route>
-              <Route exact path="/notifications">
+              {/*<Route exact path="/notifications">
                 <Notifications />
+                </Route>*/}
+              <Route exact path="/learnNgrow">
+                <LearnNGrow />
+              </Route>
+              <Route exact path="/resources">
+                <Resources />
+              </Route>
+              <Route exact path="/postresources">
+                <PostResources />
               </Route>
               <Route>
                 <ErrorPage />

@@ -168,7 +168,7 @@ const JobTile = (props) => {
             <Grid item xs={12}>
               How much would you like to be paid for this Job?
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <TextField
                 label="Per Month"
                 style={{ width: "100%", marginBottom: "30px" }}

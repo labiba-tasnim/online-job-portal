@@ -10,6 +10,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import LearnNGrow from "./LearnNGrow";
 
 import isAuth, { userType } from "../lib/isAuth";
 
@@ -34,18 +35,24 @@ const Navbar = (props) => {
     history.push(location);
   };
 
+  const handleLearnNGrowClick = (path) => {
+    history.push(path);
+  };
+
   return (
     <AppBar position="fixed">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           ChakriHub
         </Typography>
+
         {isAuth() ? (
           userType() === "recruiter" ? (
             <>
               <Button color="inherit" onClick={() => handleClick("/home")}>
                 Home
               </Button>
+              <LearnNGrow onItemClick={handleLearnNGrowClick} />
               <Button color="inherit" onClick={() => handleClick("/addjob")}>
                 Add Jobs
               </Button>
@@ -61,9 +68,9 @@ const Navbar = (props) => {
               <Button color="inherit" onClick={() => handleClick("/profile")}>
                 Profile
               </Button>
-              <Button color="inherit" onClick={() => handleClick("/notifications")}>
+              {/*<Button color="inherit" onClick={() => handleClick("/notifications")}>
                 Notifications
-              </Button>
+          </Button>*/}
               <Button color="inherit" onClick={() => handleClick("/logout")}>
                 Logout
               </Button>
@@ -73,6 +80,7 @@ const Navbar = (props) => {
               <Button color="inherit" onClick={() => handleClick("/home")}>
                 Home
               </Button>
+              <LearnNGrow onItemClick={handleLearnNGrowClick} />
               <Button
                 color="inherit"
                 onClick={() => handleClick("/applications")}
