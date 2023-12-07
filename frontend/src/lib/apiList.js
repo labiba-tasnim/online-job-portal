@@ -11,7 +11,7 @@ const apiList = {
   applicants: `${server}/api/applicants`,
   userSearch: `${server}/api/search/user`,
   connection: `${server}/api/user/me/connections`,
-  conversation: `${server}/api/conversation`
+  // notification
 };
 
 export default apiList;
