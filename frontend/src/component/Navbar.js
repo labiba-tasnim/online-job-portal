@@ -10,6 +10,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import LearnNGrow from "./LearnNGrow";
 
 import isAuth, { userType } from "../lib/isAuth";
 
