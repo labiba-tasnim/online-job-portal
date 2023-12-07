@@ -31,6 +31,8 @@ import { SetPopupContext } from "../App";
 import apiList from "../lib/apiList";
 import { userType } from "../lib/isAuth";
 
+import Comment from "./Comment";
+
 const useStyles = makeStyles((theme) => ({
   body: {
     height: "inherit",
@@ -198,6 +200,9 @@ const JobTile = (props) => {
           </Grid>
         </Paper>
       </Modal>
+      <Grid item>
+        <Comment applicationId={job._id} />
+      </Grid>
     </Paper>
   );
 };
