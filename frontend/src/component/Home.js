@@ -15,6 +15,9 @@ import {
   FormGroup,
   MenuItem,
   Checkbox,
+  List,
+  ListItem,
+  Avatar,
 } from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import Pagination from "@material-ui/lab/Pagination";
@@ -30,8 +33,6 @@ import { SetPopupContext } from "../App";
 
 import apiList from "../lib/apiList";
 import { userType } from "../lib/isAuth";
-
-import Comment from "./Comment";
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -62,6 +63,7 @@ const JobTile = (props) => {
 
   const [open, setOpen] = useState(false);
   const [sop, setSop] = useState("");
+  const [comments, setComments] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -101,6 +103,31 @@ const JobTile = (props) => {
         });
         handleClose();
       });
+  };
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(`/applications/${job._id}/comments`);
+      setComments(response.data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [job._id]);
+
+  const handleCommentSubmit = async () => {
+    try {
+      const response = await axios.post(`/applications/${job._id}/comments`, {
+        text: sop, // Assuming SOP is used as a comment text
+      });
+      setComments(response.data);
+      setSop('');
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+    }
   };
 
   const deadline = new Date(job.deadline).toLocaleDateString();
@@ -198,11 +225,28 @@ const JobTile = (props) => {
               </Button>
             </Grid>
           </Grid>
+          <Typography variant="h6">Comments</Typography>
+          <TextField
+            label="Add a comment"
+            multiline
+            rows={4}
+            fullWidth
+            value={sop}
+            onChange={(e) => setSop(e.target.value)}
+          />
+          <Button variant="contained" color="primary" onClick={handleCommentSubmit}>
+            Add Comment
+          </Button>
+          <List>
+            {comments.map((comment) => (
+              <ListItem key={comment._id}>
+                <Avatar>{comment.userId.name[0]}</Avatar>
+                <Typography>{comment.userId.name}: {comment.text}</Typography>
+              </ListItem>
+            ))}
+          </List>
         </Paper>
       </Modal>
-      <Grid item>
-        <Comment applicationId={job._id} />
-      </Grid>
     </Paper>
   );
 };

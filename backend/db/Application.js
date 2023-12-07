@@ -43,29 +43,16 @@ let schema = new mongoose.Schema(
         },
       ],
     },
-    sop: [
-      {
-        commentername: {
-          type: String,
-          required: true,
+    sop: {
+      type: String,
+      validate: {
+         validator: function (v) {
+         return v.split(" ").filter((ele) => ele != "").length <= 250;
         },
-        userId: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-        },
-        text: {
-          type: String,
-          required: true,
-          validate: {
-            validator: function (v) {
-              return v.split(" ").filter((ele) => ele != "").length <= 250;
-            },
-            msg: "Statement of purpose should not be greater than 250 words",
-          },
-        },
+         msg: "Statement of purpose should not be greater than 250 words",
       },
-    ],
-  },
+    },
+   },
   { collation: { locale: "en" } }
 );
 

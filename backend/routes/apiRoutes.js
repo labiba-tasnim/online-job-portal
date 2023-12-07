@@ -1196,55 +1196,55 @@ router.get("/applicants", jwtAuth, (req, res) => {
   }
 });
 
-// router.post("/applications/:id/comments", jwtAuth, (req, res) => {
-//   const user = req.user;
-//   const applicationId = req.params.id;
-//   const commentText = req.body.text;
+router.post("/applications/:id/comments", jwtAuth, (req, res) => {
+  const user = req.user;
+  const applicationId = req.params.id;
+  const commentText = req.body.text;
 
-//   // Validate input...
+  // Validate input...
 
-//   Application.findOneAndUpdate(
-//     { _id: applicationId, userId: user._id },
-//     {
-//       $push: {
-//         comments: {
-//           userId: user._id,
-//           text: commentText,
-//         },
-//       },
-//     },
-//     { new: true }
-//   )
-//     .then((updatedApplication) => {
-//       if (!updatedApplication) {
-//         return res.status(404).json({ message: "Application not found" });
-//       }
-//       res.json(updatedApplication.comments);
-//     })
-//     .catch((err) => {
-//       res.status(400).json(err);
-//     });
-// });
+  Application.findOneAndUpdate(
+    { _id: applicationId, userId: user._id },
+    {
+      $push: {
+        comments: {
+          userId: user._id,
+          text: commentText,
+        },
+      },
+    },
+    { new: true }
+  )
+    .then((updatedApplication) => {
+      if (!updatedApplication) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updatedApplication.comments);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
 
-// router.get("/applications/:id/comments", jwtAuth, (req, res) => {
-//   const applicationId = req.params.id;
+router.get("/applications/:id/comments", jwtAuth, (req, res) => {
+  const applicationId = req.params.id;
 
-//   Application.findById(applicationId)
-//     .select("comments")
-//     .populate({
-//       path: "comments.userId",
-//       model: "User",
-//       select: "name", // Customize fields to retrieve from the User model
-//     })
-//     .then((application) => {
-//       if (!application) {
-//         return res.status(404).json({ message: "Application not found" });
-//       }
-//       res.json(application.comments);
-//     })
-//     .catch((err) => {
-//       res.status(400).json(err);
-//     });
-// });
+  Application.findById(applicationId)
+    .select("comments")
+    .populate({
+      path: "comments.userId",
+      model: "User",
+      select: "name", // Customize fields to retrieve from the User model
+    })
+    .then((application) => {
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application.comments);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
 
 module.exports = router;
