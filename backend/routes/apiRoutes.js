@@ -9,7 +9,8 @@ const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
 const Connection = require("../db/Connection");
-
+const Conversations = require("../db/Conversation");
+const Message = require("../db/Message");
 const router = express.Router();
 
 // To add new job
@@ -1196,5 +1197,112 @@ router.get("/applicants", jwtAuth, (req, res) => {
     });
   }
 });
+
+router.post("/applications/:id/comments", jwtAuth, (req, res) => {
+  const user = req.user;
+  const applicationId = req.params.id;
+  const commentText = req.body.text;
+
+  // Validate input...
+
+  Application.findOneAndUpdate(
+    { _id: applicationId, userId: user._id },
+    {
+      $push: {
+        comments: {
+          userId: user._id,
+          text: commentText,
+        },
+      },
+    },
+    { new: true }
+  )
+    .then((updatedApplication) => {
+      if (!updatedApplication) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updatedApplication.comments);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.get("/applications/:id/comments", jwtAuth, (req, res) => {
+  const applicationId = req.params.id;
+
+  Application.findById(applicationId)
+    .select("comments")
+    .populate({
+      path: "comments.userId",
+      model: "User",
+      select: "name", // Customize fields to retrieve from the User model
+    })
+    .then((application) => {
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application.comments);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+
+
+// cancelling chat
+// conversations
+// router.post('/', async (req,res) => {
+//   const newConversation = new Conversation({
+//       members: [req.body.senderId , req.body.receiverId]
+//   });
+
+//   try{
+//       const savedConversation = await newConversation.save()
+//       res.status(200).json(savedConversation)
+//   }catch(err){
+//       res.status(500).json(err)
+//   }
+// });
+
+// // get conv of a user
+
+// router.get('/:userId',async (req,res) => {
+//   try{
+//       const conversation = await Conversation.find({
+//         members: { $all: [senderId, receiverId]},
+//       });
+//       res.status(200).json(conversation);
+//   }catch(err){
+//     res.status(500).json(err);
+//   }
+// });
+
+// // add
+
+// router.post("/", async (req,res) => {
+//   const newMessage = new Message(req.body)
+
+//   try{
+//       const savedMessage = await newMessage.save()
+//       res.status(200).json(savedMessage)
+//   }catch(err){
+//     res.status(500).json(err)
+//   }
+// });
+
+// // get
+
+// router.get("/:conversationId",async(req,res) => {
+//   try{
+//     const messages = await Message.find({
+//       conversationId:req.params.conversationId, 
+//     });
+//     res.status(200).json(messages);
+//   }catch(err){
+//     res.status(500).json(err);
+//   }
+// })
 
 module.exports = router;
