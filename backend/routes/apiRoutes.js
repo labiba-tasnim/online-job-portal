@@ -9,8 +9,6 @@ const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
 const Connection = require("../db/Connection");
-const Conversations = require("../db/Conversation");
-const Message = require("../db/Message");
 const router = express.Router();
 
 // To add new job
