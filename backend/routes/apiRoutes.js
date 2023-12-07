@@ -9,7 +9,6 @@ const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
 const Connection = require("../db/Connection");
-
 const router = express.Router();
 
 // To add new job
@@ -1195,6 +1194,57 @@ router.get("/applicants", jwtAuth, (req, res) => {
       message: "You are not allowed to access applicants list",
     });
   }
+});
+
+router.post("/applications/:id/comments", jwtAuth, (req, res) => {
+  const user = req.user;
+  const applicationId = req.params.id;
+  const commentText = req.body.text;
+
+  // Validate input...
+
+  Application.findOneAndUpdate(
+    { _id: applicationId, userId: user._id },
+    {
+      $push: {
+        comments: {
+          userId: user._id,
+          text: commentText,
+        },
+      },
+    },
+    { new: true }
+  )
+    .then((updatedApplication) => {
+      if (!updatedApplication) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(updatedApplication.comments);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.get("/applications/:id/comments", jwtAuth, (req, res) => {
+  const applicationId = req.params.id;
+
+  Application.findById(applicationId)
+    .select("comments")
+    .populate({
+      path: "comments.userId",
+      model: "User",
+      select: "name", // Customize fields to retrieve from the User model
+    })
+    .then((application) => {
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json(application.comments);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 module.exports = router;

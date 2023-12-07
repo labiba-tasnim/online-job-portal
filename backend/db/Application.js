@@ -17,13 +17,13 @@ let schema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
-        "applied", // when a applicant is applied
-        "shortlisted", // when a applicant is shortlisted
-        "accepted", // when a applicant is accepted
-        "rejected", // when a applicant is rejected
-        "deleted", // when any job is deleted
-        "cancelled", // an application is cancelled by its author or when other application is accepted
-        "finished", // when job is over
+        "applied",
+        "shortlisted",
+        "accepted",
+        "rejected",
+        "deleted",
+        "cancelled",
+        "finished",
       ],
       default: "applied",
       required: true,
@@ -46,13 +46,13 @@ let schema = new mongoose.Schema(
     sop: {
       type: String,
       validate: {
-        validator: function (v) {
-          return v.split(" ").filter((ele) => ele != "").length <= 250;
+         validator: function (v) {
+         return v.split(" ").filter((ele) => ele != "").length <= 250;
         },
-        msg: "Statement of purpose should not be greater than 250 words",
+         msg: "Statement of purpose should not be greater than 250 words",
       },
     },
-  },
+   },
   { collation: { locale: "en" } }
 );
 

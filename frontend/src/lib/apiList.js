@@ -10,7 +10,8 @@ const apiList = {
   user: `${server}/api/user`,
   applicants: `${server}/api/applicants`,
   userSearch: `${server}/api/search/user`,
-  connection: `${server}/api/user/me/connections`
+  connection: `${server}/api/user/me/connections`,
+  // notification
 };
 
 export default apiList;
