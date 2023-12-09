@@ -726,11 +726,7 @@ const MyJobs = (props) => {
         setJobs((prevJobs) =>
           [
             ...prevJobs,
-            ...response.data.results.filter((obj) => {
-              const today = new Date();
-              const deadline = new Date(obj.deadline);
-              return deadline > today;
-            })
+            ...response.data.results
           ]
         );
 
